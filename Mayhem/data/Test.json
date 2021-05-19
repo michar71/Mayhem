@@ -1,0 +1,38 @@
+[
+  {
+    "val": 255,
+    "param": "COL_B"
+  },
+  {
+    "val": 255,
+    "param": "COL_R"
+  },
+  {
+    "val": 0,
+    "param": "POS_Y"
+  },
+  {
+    "val": 0,
+    "param": "POS_X"
+  },
+  {
+    "val": 255,
+    "param": "BRIGHT"
+  },
+  {
+    "val": 0,
+    "param": "DIR"
+  },
+  {
+    "val": 0,
+    "param": "SPEED"
+  },
+  {
+    "val": 255,
+    "param": "COL_G"
+  },
+  {
+    "val": 1,
+    "param": "SCALE"
+  }
+]
