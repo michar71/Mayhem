@@ -11,6 +11,8 @@ import processing.sound.*;
 class fx_linear_scheduler{
     protected fx_linear_base current_fx;
     protected fx_linear_base next_fx;
+    protected fx_artnet_link artnet_link;
+    
     protected boolean newFx = false;
     protected int fxHeight;
     protected PGraphics fxGfx;
@@ -27,6 +29,7 @@ fx_linear_scheduler(int height,fx_linear_base first_fx)
   next_fx = current_fx;
   newFx = false;
   fxGfx = createGraphics(1, fxHeight,P2D);
+  artnet_link = new fx_artnet_link(downsample.NEAREST_NEIGHBOR,10);
 }
     
     
@@ -73,7 +76,9 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
     gfx.image(gfx,1,0,fxheight,fxheight);
     gfx.image(fxGfx,0,0,1,fxheight);
     gfx.endDraw();
-    update_visual_fx();
+    
+    //Update Artnet...
+   artnet_link.fx_artnet_update(gfx);
   }
   
 }
@@ -88,15 +93,15 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
     return current_fx.getParam(param);
   }
   
-    void setBrightness(int theValue)
+  void setBrightness(int theValue)
   {
     current_fx.setBrightness(theValue);
   }
+  
+  void setFilename(String filen)
+  {
+    current_fx.setFilename(filen);
+  }
 
-
-void update_visual_fx()
-{
-  //Do DMX/Artnet here...
-}
 
 }

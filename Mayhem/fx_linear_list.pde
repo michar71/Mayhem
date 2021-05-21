@@ -22,6 +22,7 @@ fx_linear_list(int fxheight)
   fxlist.add(new fx_member((fx_linear_base)new fx_linear_test(fxheight),"Test"));
   fxlist.add(new fx_member((fx_linear_base)new fx_random_sparkles(fxheight),"Random Sparkles"));
   fxlist.add(new fx_member((fx_linear_base)new fx_rainbow(fxheight),"Rainbow")); 
+  fxlist.add(new fx_member((fx_linear_base)new fx_image_scroll(fxheight),"ScrollPic")); 
   //This is currently hardcoded....
 }
 

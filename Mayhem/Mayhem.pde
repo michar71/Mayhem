@@ -19,7 +19,7 @@ long puffer_dely_ns = 500 * 1000 * 1000;//500ms...
 
 //General Variables
 int mayhem_version_maj = 0;
-int mayhem_version_min = 4;
+int mayhem_version_min = 5;
 int sizex = 800;
 int sizey = 600;
 int buttonx = 20;
@@ -187,6 +187,7 @@ void draw_light_control()
   rect(5,100,fxheight+2,fxheight+2);
   
   //Call the FX scheduler
+  scheduler.setFilename("Untitled.jpg");   //Test only
   scheduler.updateScheduler(System.nanoTime()/1000,next_beat_zero_time/1000,beatDetect.getBeat(),fullGfx);   //HARDCODED ON BEAT FOR TESTING !!@!
   
   //Draw FX Result

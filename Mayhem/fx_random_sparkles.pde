@@ -32,14 +32,13 @@ class fx_random_sparkles extends fx_linear_base
       int pos = 0;
       for (int ii=0;ii<cnt;ii++)
       {
-        int r = (int)random(255);
-        int g = (int)random(255);
-        int b = (int)random(255);
+        int r = (int)random(current_red);
+        int g = (int)random(current_green);
+        int b = (int)random(current_blue);
         gfx.stroke(r,g,b);
         pos = (int)random(fxHeight);
         gfx.line(0,pos,0,pos+1);
       }
-
 
       return true;
   }

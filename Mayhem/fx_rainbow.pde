@@ -38,10 +38,6 @@ class fx_rainbow extends fx_linear_base
     fx_rainbow(int height)
     {
       super(height);
-      maxBrightness = 255;
-      current_red = 255;
-      current_green = 255;
-      current_blue = 255;
       name = "Random Sparkles";
       params.put("SCALE",100);
       params.put("SPEED",100);
@@ -57,10 +53,10 @@ class fx_rainbow extends fx_linear_base
   
     public boolean run_linear_ani(int currentBeatCount, PGraphics gfx)
     {
-      float sp = current_speed/100;
-      float f = current_scale/100;
-      f = 0.5;
-      sp = 0.5;
+      float sp = current_speed/200;
+      float f = current_scale/200;
+      println("SP:"+sp);
+      println("F:"+f);
       offset = offset + sp;
 
       for (int i = 0; i < gfx.height; i++)

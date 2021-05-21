@@ -203,7 +203,7 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
       current_blue = updateval(current_blue,"COL_B",false);
       current_x = updateval(current_x,"POS_X",false);
       current_y = updateval(current_y,"POS_Y",false);
-      dumpData();
+      //dumpData();
     }
 
 
