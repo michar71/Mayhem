@@ -102,6 +102,30 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
   {
     current_fx.setFilename(filen);
   }
+  
+  void firePooferManual(boolean on)
+  {
+    artnet_link.puffer_manual(on);
+  }
+  
+  void firePoofer(int mode)
+  {
+    artnet_link.puffer_control(mode);
+  }
 
+  void setAudio(Amplitude lc, Amplitude rc)
+  {
+      current_fx.setAudio(lc,rc);
+  }
 
+  void setFFT(FFT fftl,FFT fftr)
+  {
+    current_fx.setFFT(fftl,fftr);
+  }
+  
+  void saveData()
+  {
+    current_fx.saveData();
+  }
+  
 }

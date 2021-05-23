@@ -145,4 +145,40 @@ void fx_artnet_update(PGraphics gfx)
     artnet.broadcastDmx(0, 0, dmxData);
 }
 
+
+int POOFER_MODE = 500;
+int POOFER_MANUAL_TRIGGER = 501;
+
+int POOF_MODE_MANUAL = 0;
+int POOF_MODE_SINGLE = 1;
+int POOF_MODE_SMALL_BIG = 2;
+int POOF_MODE_PULSE = 3;
+
+
+//Reserving Adress 500-512 for Puffer Control
+void puffer_control(int mode)
+{
+  //Transfer Color Values into DMX Array
+  dmxData[POOFER_MODE] = (byte)mode;
+  dmxData[POOFER_MANUAL_TRIGGER] = 1;
+  
+  //Send DMX Array
+  artnet.broadcastDmx(0, 0, dmxData);
+}
+
+void puffer_manual(boolean on)
+{
+  dmxData[POOFER_MODE] = (byte)POOF_MODE_MANUAL;
+  if (on == true)
+  {
+    dmxData[POOFER_MANUAL_TRIGGER] = 1;
+  }
+  else
+  {
+    dmxData[POOFER_MANUAL_TRIGGER] = 0;
+  }
+  //Send DMX Array
+  artnet.broadcastDmx(0, 0, dmxData);
+}
+
 }

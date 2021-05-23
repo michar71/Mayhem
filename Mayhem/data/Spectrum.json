@@ -1,0 +1,18 @@
+[
+  {
+    "val": 0,
+    "param": "BURST"
+  },
+  {
+    "val": 255,
+    "param": "BRIGHT"
+  },
+  {
+    "val": 810,
+    "param": "SPEED"
+  },
+  {
+    "val": 789,
+    "param": "SCALE"
+  }
+]

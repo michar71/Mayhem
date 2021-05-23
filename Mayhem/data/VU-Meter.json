@@ -1,0 +1,14 @@
+[
+  {
+    "val": 255,
+    "param": "BRIGHT"
+  },
+  {
+    "val": 2,
+    "param": "SPEED"
+  },
+  {
+    "val": 1,
+    "param": "SCALE"
+  }
+]

@@ -3,8 +3,19 @@ import controlP5.*;
 import java.util.*;
 import java.lang.*;
 import processing.sound.*;
-import processing.serial.*;
 
+//Audio-Related Variables
+AudioIn in_l;
+AudioIn in_r;
+Amplitude rms_l;
+Amplitude rms_r;
+FFT fft_l;
+FFT fft_r;
+int bands = 128;
+int audio_channel_left = 0;
+int audio_channel_right = 0;
+
+//UI
 ControlP5 cp5;
 Textlabel bpm_label;
 Textlabel fxLabelFPS;
@@ -13,19 +24,21 @@ Slider fire_length;
 CheckBox loop_gfx;
 CheckBox sync_gfx;
 CheckBox decay_gfx;
+List puffmode;
 
 //Hard-coded Constant
 long puffer_dely_ns = 500 * 1000 * 1000;//500ms...
 
 //General Variables
 int mayhem_version_maj = 0;
-int mayhem_version_min = 5;
+int mayhem_version_min = 6;
 int sizex = 800;
 int sizey = 600;
 int buttonx = 20;
 int buttony = 20;
 int fxheight = 256;
 boolean started = false;
+int currentPuffMode = 0;
 
 PGraphics fullGfx;
 
@@ -74,10 +87,19 @@ void setup_ui()
      .setLabel("")
      ;    
      
-  List puffmode = Arrays.asList("Manual","Single", "Small/Big", "Pulse");
+
+     
+  fire_length = cp5.addSlider("Puff Dur")
+     .setPosition(80,0+30)
+     .setSize(100,20)
+     .setRange(1,10000)
+     .setValue(1000)
+     ;
+     
+  puffmode = Arrays.asList("Manual","Single", "Small/Big", "Pulse");
   /* add a ScrollableList, by default it behaves like a DropdownList */
   cp5.addScrollableList("PuffMode")
-     .setPosition(80, 0+30)
+     .setPosition(240, 0+30)
      .setSize(buttonx*3,buttony*10)
      .setBarHeight(20)
      .setItemHeight(20)
@@ -85,13 +107,6 @@ void setup_ui()
      .setValue(1)
      // .setType(ScrollableList.LIST) // currently supported DROPDOWN and LIST
      ; 
-     
-  fire_length = cp5.addSlider("Puff Duration")
-     .setPosition(160,0+30)
-     .setSize(100,20)
-     .setRange(1,10000)
-     .setValue(1000)
-     ;
      
   loop_gfx = cp5.addCheckBox("loop")
                 .setPosition(5, 370)
@@ -153,7 +168,13 @@ void setup_ui()
 
     cp5.addColorWheel("col").setBroadcast(false).setRGB(color(128,0,255)).setPosition(col,top).setWidth(190).setBroadcast(true);
   
-                
+       cp5.addButton("saveParams")
+           .setBroadcast(false)
+           .setValue(128)
+           .setLabel("Save Parameters")
+           .setPosition(col,top+220)
+           .setSize(buttonx*4,buttony)
+           .setBroadcast(true);             
 }
 
 void drawbeatmarker(int beat,int mode)
@@ -187,7 +208,12 @@ void draw_light_control()
   rect(5,100,fxheight+2,fxheight+2);
   
   //Call the FX scheduler
+  //Update Auddio parameters
+  scheduler.setAudio(rms_l,rms_r);
+  scheduler.setFFT(fft_l,fft_r);
+  //Set Filename
   scheduler.setFilename("Untitled.jpg");   //Test only
+  //Call Scheduler
   scheduler.updateScheduler(System.nanoTime()/1000,next_beat_zero_time/1000,beatDetect.getBeat(),fullGfx);   //HARDCODED ON BEAT FOR TESTING !!@!
   
   //Draw FX Result
@@ -221,6 +247,29 @@ void setup()
   beatDetect = new fx_beat_Detect();
   fullGfx = createGraphics(fxheight, fxheight,P2D);
   setup_ui();
+  
+    //Setup audio Stuff
+  in_l = new AudioIn(this,audio_channel_left);
+  in_l.start();
+  
+  in_r = new AudioIn(this,audio_channel_right);
+  in_r.start();
+  
+  rms_l = new Amplitude(this);
+  rms_l.input(in_l); 
+
+  rms_r = new Amplitude(this);
+  rms_r.input(in_r);   
+  
+    // Create the FFT analyzer and connect the playing soundfile to it.
+  fft_l = new FFT(this, bands);
+  fft_l.input(in_l);
+  
+  
+    // Create the FFT analyzer and connect the playing soundfile to it.
+  fft_r = new FFT(this, bands);
+  fft_r.input(in_r);
+  
   logger.log("SETUP DONE");
   started = true;
 }
@@ -260,6 +309,11 @@ void beatdetect()
 void puffer_trigger_process()
 {
   long now_time = System.nanoTime();
+  
+  //Bail out on manaul control so we don't interfere..
+  if (currentPuffMode == 0)
+    return;
+    
   if ((puffer_trigger == true) && (puffer_on == false))
   {
     //Calulate the point in time we need to send the signals
@@ -277,12 +331,24 @@ void puffer_trigger_process()
   {
     puffer_on = true;
     //Send DMX Command for Puffer Here..
+    if (currentPuffMode == 1)
+    {
+      scheduler.firePooferManual(true);
+    }
+    else
+    {
+      scheduler.firePoofer(currentPuffMode);
+    }
     fill(0,255,0);
   }
   else
   {
     puffer_on = false;
     //Send DMX Command for Puffer Here...
+    if (currentPuffMode == 1)
+    {
+      scheduler.firePooferManual(false);
+    }    
     fill(64,64,64);
     refill_duration = (long)((float)(puffer_trigger_end_time - buffer_trigger_start_time) * refill_multiplier);
     
@@ -302,6 +368,10 @@ void keyPressed()
   if (key == 'b') 
   {
      beatdetect();
+  }
+  if (key == 'f')
+  {
+    puffer_trigger = true;
   }
 }
 
@@ -328,11 +398,24 @@ public void FIRE(int theValue)
     fire_bang.setTriggerEvent(Bang.RELEASE);
     puffer_trigger = true;
     println("FIRE DOWN");
+    if (currentPuffMode == 0)
+    {
+      scheduler.firePooferManual(true);
+      fill(0,255,0);
+      circle(340, 30+12, 12); 
+    }
+    
+    
   }
   else
   {
     fire_bang.setTriggerEvent(Bang.PRESSED);
     println("FIRE UP");
+    if (currentPuffMode == 0)
+    {
+      fill(64,64,64);
+      circle(340, 30+12, 12); 
+    }
   }
   
 }
@@ -411,4 +494,20 @@ public void col(int theValue)
   scheduler.setParam("COL_B",col & 0xFF);
   scheduler.setParam("COL_G",(col>>8) & 0xFF);
   scheduler.setParam("COL_R",(col>>16) & 0xFF); 
+}
+
+public void PuffMode(int theValue)
+{
+  currentPuffMode = theValue;
+}
+
+
+void saveParams(int theValue)
+{
+  do_save();
+}
+
+void do_save()
+{
+      scheduler.saveData();
 }

@@ -39,7 +39,7 @@ class fx_beat_Detect{
         lastNanos = System.nanoTime();
         threadON=true;
         beat=0;
-        frameRate((int)(bpm/4));
+        //frameRate((int)(bpm/4));
         thread("myThreadTimer");
       }
     }
