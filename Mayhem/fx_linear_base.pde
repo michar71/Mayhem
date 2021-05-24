@@ -416,6 +416,7 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
     final void setFilename(String filen)
     {
         filenamestr = filen;
+        println(filenamestr);
     }
 
 }

@@ -3,6 +3,9 @@ import controlP5.*;
 import java.util.*;
 import java.lang.*;
 import processing.sound.*;
+import themidibus.*; //Import the library
+import java.io.File;
+import java.io.FilenameFilter;
 
 //Audio-Related Variables
 AudioIn in_l;
@@ -14,6 +17,8 @@ FFT fft_r;
 int bands = 128;
 int audio_channel_left = 0;
 int audio_channel_right = 0;
+
+MidiBus myBus; // The MidiBus
 
 //UI
 ControlP5 cp5;
@@ -137,6 +142,22 @@ void setup_ui()
      .setValue(0)
      // .setType(ScrollableList.LIST) // currently supported DROPDOWN and LIST
      ; 
+     
+  List<String> filenames = new ArrayList<String>(); 
+  String[] jpegFiles =  listFileNames(sketchPath()+"/data",jpgFilefilter);
+  if (jpegFiles != null)
+  {  
+    filenames = Arrays.asList(jpegFiles);
+  }
+  
+  cp5.addScrollableList("FileList")
+     .setPosition(340, 5)
+     .setSize(buttonx*8,buttony*20)
+     .setBarHeight(20)
+     .setItemHeight(20)
+     .addItems(filenames)
+     .setType(ScrollableList.LIST) // currently supported DROPDOWN and LIST
+     ;  
          
     int top = 5;  
     int col = 600;
@@ -205,14 +226,14 @@ void draw_light_control()
   //Draw the frame
   fill(0);
   stroke(128);
-  rect(5,100,fxheight+2,fxheight+2);
+  rect(5,100,fxheight+1,fxheight+1);
   
   //Call the FX scheduler
   //Update Auddio parameters
   scheduler.setAudio(rms_l,rms_r);
   scheduler.setFFT(fft_l,fft_r);
   //Set Filename
-  scheduler.setFilename("Untitled.jpg");   //Test only
+  //scheduler.setFilename("Untitled.jpg");   //Test only
   //Call Scheduler
   scheduler.updateScheduler(System.nanoTime()/1000,next_beat_zero_time/1000,beatDetect.getBeat(),fullGfx);   //HARDCODED ON BEAT FOR TESTING !!@!
   
@@ -226,6 +247,38 @@ void updateFramerate()
   fill(0);
   fxLabelFPS.setText("FPS: "+int(frameRate));
 }
+
+FilenameFilter jpgFilefilter = new FilenameFilter()
+{
+         public boolean accept(File dir, String name) 
+         {
+            String lowercaseName = name.toLowerCase();
+            if (lowercaseName.endsWith(".jpg")) {
+               return true;
+            } 
+            else 
+            {
+               return false;
+            }
+         }
+      };
+      
+// This function returns all the files in a directory as an array of Strings  
+String[] listFileNames(String dir,FilenameFilter filter) 
+{
+  File file = new File(dir);
+  if (file.isDirectory()) 
+  {
+    String names[] = file.list(filter);
+    return names;
+  } 
+  else 
+  {
+    // If it's not a directory
+    return null;
+  }
+}
+
 
 
 void setup() 
@@ -269,6 +322,8 @@ void setup()
     // Create the FFT analyzer and connect the playing soundfile to it.
   fft_r = new FFT(this, bands);
   fft_r.input(in_r);
+  
+   myBus = new MidiBus(this, -1, "Java Sound Synthesizer"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
   
   logger.log("SETUP DONE");
   started = true;
@@ -501,6 +556,10 @@ public void PuffMode(int theValue)
   currentPuffMode = theValue;
 }
 
+public void FileList(int theValue)
+{
+  scheduler.setFilename((String)(cp5.get(ScrollableList.class, "FileList").getItem(theValue).get("text")));
+}
 
 void saveParams(int theValue)
 {
@@ -510,4 +569,34 @@ void saveParams(int theValue)
 void do_save()
 {
       scheduler.saveData();
+}
+
+void noteOn(int channel, int pitch, int velocity) {
+  // Receive a noteOn
+  println();
+  println("Note On:");
+  println("--------");
+  println("Channel:"+channel);
+  println("Pitch:"+pitch);
+  println("Velocity:"+velocity);
+}
+
+void noteOff(int channel, int pitch, int velocity) {
+  // Receive a noteOff
+  println();
+  println("Note Off:");
+  println("--------");
+  println("Channel:"+channel);
+  println("Pitch:"+pitch);
+  println("Velocity:"+velocity);
+}
+
+void controllerChange(int channel, int number, int value) {
+  // Receive a controllerChange
+  println();
+  println("Controller Change:");
+  println("--------");
+  println("Channel:"+channel);
+  println("Number:"+number);
+  println("Value:"+value);
 }

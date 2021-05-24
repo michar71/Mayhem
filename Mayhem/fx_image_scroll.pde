@@ -36,6 +36,7 @@ class fx_image_scroll extends fx_linear_base
     public boolean run_linear_ani(int currentBeatCount, PGraphics gfx)
     {
       //Check if we have a new filename
+      println(filenamestr);
       if (filenamestr != currentfile)
       {
           //Check if file exists
