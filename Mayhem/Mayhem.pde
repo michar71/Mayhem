@@ -36,7 +36,7 @@ long puffer_dely_ns = 500 * 1000 * 1000;//500ms...
 
 //General Variables
 int mayhem_version_maj = 0;
-int mayhem_version_min = 6;
+int mayhem_version_min = 7;
 int sizex = 800;
 int sizey = 600;
 int buttonx = 20;
