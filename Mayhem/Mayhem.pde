@@ -3,9 +3,9 @@ import controlP5.*;
 import java.util.*;
 import java.lang.*;
 import processing.sound.*;
-import themidibus.*; //Import the library
 import java.io.File;
 import java.io.FilenameFilter;
+import themidibus.*; //Import the library
 
 //Audio-Related Variables
 AudioIn in_l;
@@ -17,8 +17,8 @@ FFT fft_r;
 int bands = 128;
 int audio_channel_left = 0;
 int audio_channel_right = 0;
-
 MidiBus myBus; // The MidiBus
+    
 
 //UI
 ControlP5 cp5;
@@ -323,7 +323,8 @@ void setup()
   fft_r = new FFT(this, bands);
   fft_r.input(in_r);
   
-   myBus = new MidiBus(this, -1, "Java Sound Synthesizer"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
+  MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
+  myBus = new MidiBus(this, "USB MIDI Interface", "USB MIDI Interface"); 
   
   logger.log("SETUP DONE");
   started = true;
@@ -571,7 +572,8 @@ void do_save()
       scheduler.saveData();
 }
 
-void noteOn(int channel, int pitch, int velocity) {
+void noteOn(int channel, int pitch, int velocity) 
+{
   // Receive a noteOn
   println();
   println("Note On:");
@@ -579,9 +581,12 @@ void noteOn(int channel, int pitch, int velocity) {
   println("Channel:"+channel);
   println("Pitch:"+pitch);
   println("Velocity:"+velocity);
+  
+  scheduler.sendNote(true,channel,pitch,velocity);
 }
 
-void noteOff(int channel, int pitch, int velocity) {
+void noteOff(int channel, int pitch, int velocity) 
+{
   // Receive a noteOff
   println();
   println("Note Off:");
@@ -589,9 +594,11 @@ void noteOff(int channel, int pitch, int velocity) {
   println("Channel:"+channel);
   println("Pitch:"+pitch);
   println("Velocity:"+velocity);
+  scheduler.sendNote(false,channel,pitch,velocity);
 }
 
-void controllerChange(int channel, int number, int value) {
+void controllerChange(int channel, int number, int value)
+{
   // Receive a controllerChange
   println();
   println("Controller Change:");

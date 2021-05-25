@@ -29,6 +29,21 @@ import java.util.*;
 import processing.sound.*;
 
 class fx_linear_base{
+  class note_member
+  {
+      public boolean state_on; 
+      public int state_velocity;
+      
+      note_member(boolean on, int velocity)
+      {
+        state_on = on;
+        state_velocity = velocity;
+      }
+  };
+   
+    public List<note_member> notelist = new ArrayList<note_member>();
+  
+  
     //Common Parameters. Use these as we are supporting blending on these when set
     protected float maxBrightness =255;
     protected float current_red;
@@ -71,6 +86,11 @@ class fx_linear_base{
       name = "Linear Base";
       //Not much to do here....
       params.put("BRIGHT",maxBrightness);
+      
+      for (int ii=0;ii<128;ii++)
+      {
+          notelist.add(new note_member(false, 0));
+      }
     }
   
    //-------------------------------------------------------------
@@ -417,6 +437,14 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
     {
         filenamestr = filen;
         println(filenamestr);
+    }
+    
+    
+    //Notes can be on and off
+    void sendNote(boolean on, int channel, int pitch, int velocity)
+    {
+      notelist.get(pitch).state_on = on;
+      notelist.get(pitch).state_velocity = velocity;
     }
 
 }

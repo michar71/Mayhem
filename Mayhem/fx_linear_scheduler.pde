@@ -123,6 +123,11 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
     current_fx.setFFT(fftl,fftr);
   }
   
+  void sendNote(boolean on, int channel, int pitch, int velocity)
+  {
+       current_fx.sendNote(on,  channel,  pitch,  velocity);
+  }
+  
   void saveData()
   {
     current_fx.saveData();
