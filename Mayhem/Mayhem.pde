@@ -36,7 +36,7 @@ long puffer_dely_ns = 500 * 1000 * 1000;//500ms...
 
 //General Variables
 int mayhem_version_maj = 0;
-int mayhem_version_min = 7;
+int mayhem_version_min = 8;
 int sizex = 800;
 int sizey = 600;
 int buttonx = 20;
@@ -284,7 +284,7 @@ String[] listFileNames(String dir,FilenameFilter filter)
 void setup() 
 {
   logger = new fx_logger();
-  size(800,600,P2D);    
+  size(800,600);    
   surface.setTitle("Mayhem V "+mayhem_version_maj+"."+mayhem_version_min);
   
   logger.setLoggerParameters(true,false);
@@ -298,7 +298,7 @@ void setup()
   FxList.setIndex(0);
   scheduler = new fx_linear_scheduler(fxheight,FxList.getCurrent());
   beatDetect = new fx_beat_Detect();
-  fullGfx = createGraphics(fxheight, fxheight,P2D);
+  fullGfx = createGraphics(fxheight, fxheight);
   setup_ui();
   
     //Setup audio Stuff

@@ -28,7 +28,7 @@ fx_linear_scheduler(int height,fx_linear_base first_fx)
   current_fx = first_fx;
   next_fx = current_fx;
   newFx = false;
-  fxGfx = createGraphics(1, fxHeight,P2D);
+  fxGfx = createGraphics(1, fxHeight);
   artnet_link = new fx_artnet_link(downsample.NEAREST_NEIGHBOR,10);
 }
     
@@ -73,7 +73,7 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
   {
      //Shift image to right
     gfx.beginDraw();
-    gfx.image(gfx,1,0,fxheight,fxheight);
+    gfx.copy(0,0,fxheight,fxheight,1,0,fxheight,fxheight);
     gfx.image(fxGfx,0,0,1,fxheight);
     gfx.endDraw();
     
