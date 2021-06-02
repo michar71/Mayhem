@@ -50,7 +50,7 @@ class fx_image_scroll extends fx_linear_base
              //Load file
              
              //Scale Y
-             scrollImage = createGraphics(bigImage.width, fxHeight,P2D);
+             scrollImage = createGraphics(bigImage.width, fxHeight);
              scrollImage.beginDraw();
              scrollImage.copy(bigImage, 0, 0, bigImage.width, bigImage.height, 0, 0,bigImage.width,fxHeight);
              scrollImage.endDraw();
@@ -63,6 +63,10 @@ class fx_image_scroll extends fx_linear_base
       {
         //copy line to buffer  
         gfx.copy(scrollImage, currentXPos, 0, 0, fxHeight, 0, 0, 1, fxHeight);
+        
+        //gfx.image(scrollImage, currentXPos, 0,1,fxheight);      
+        
+        
         
               //Deal with loop
         currentXPos--;

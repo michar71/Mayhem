@@ -333,7 +333,6 @@ void setup()
 void draw() 
 {
   background(64);
-  //drawbeatmarker(beat,beatmode);
   drawbeatmarker(beatDetect.getBeat(),beatDetect.getBeatMode());
   puffer_trigger_process();
   if (last_bpm != beatDetect.getBPM())
@@ -415,7 +414,7 @@ void puffer_trigger_process()
       fill(255,0,0);
     }
   }
-  circle(340, 30+12, 12); 
+  circle(320, 30+12, 12); 
 }
 
 //Key Processing

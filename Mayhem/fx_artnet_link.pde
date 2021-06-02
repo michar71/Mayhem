@@ -145,9 +145,13 @@ void fx_artnet_update(PGraphics gfx)
     artnet.broadcastDmx(0, 0, dmxData);
 }
 
-
-int POOFER_MODE = 500;
-int POOFER_MANUAL_TRIGGER = 501;
+int POOFER_BASE = 384;
+int POOFER_MODE = 12;
+int POOFER_TRIGGER = 15;
+int POOFER_EFFECT = 11;
+int POOFER_T1 = 16;
+int POOFER_T2 = 17;
+int POOFER_T3 = 18;
 
 int POOF_MODE_MANUAL = 0;
 int POOF_MODE_SINGLE = 1;
@@ -159,8 +163,9 @@ int POOF_MODE_PULSE = 3;
 void puffer_control(int mode)
 {
   //Transfer Color Values into DMX Array
-  dmxData[POOFER_MODE] = (byte)mode;
-  dmxData[POOFER_MANUAL_TRIGGER] = 1;
+  dmxData[POOFER_BASE+POOFER_EFFECT] = (byte)9;
+  dmxData[POOFER_BASE+POOFER_MODE] = (byte)mode;
+  dmxData[POOFER_BASE+POOFER_TRIGGER] = (byte)255;
   
   //Send DMX Array
   artnet.broadcastDmx(0, 0, dmxData);
@@ -168,14 +173,14 @@ void puffer_control(int mode)
 
 void puffer_manual(boolean on)
 {
-  dmxData[POOFER_MODE] = (byte)POOF_MODE_MANUAL;
+  dmxData[POOFER_BASE+POOFER_MODE] = (byte)POOF_MODE_MANUAL;
   if (on == true)
   {
-    dmxData[POOFER_MANUAL_TRIGGER] = 1;
+    dmxData[POOFER_BASE+POOFER_TRIGGER] = (byte)255;
   }
   else
   {
-    dmxData[POOFER_MANUAL_TRIGGER] = 0;
+    dmxData[POOFER_BASE+POOFER_TRIGGER] = (byte)0;
   }
   //Send DMX Array
   artnet.broadcastDmx(0, 0, dmxData);

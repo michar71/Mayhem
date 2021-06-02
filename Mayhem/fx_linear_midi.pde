@@ -58,7 +58,7 @@ class fx_linear_midi extends fx_linear_base
       {
           if (notelist.get(ii).state_on == true)
           {
-            gfx.line(0,map(ii,74,96,0,fxHeight) - map(notelist.get(ii).state_velocity,0,127,0,32),0,map(ii,74,96,0,fxHeight) + map(notelist.get(ii).state_velocity,0,127,0,32)); 
+            gfx.line(0,map(ii,74,96,0,fxHeight) - map(notelist.get(ii).state_velocity,0,127,0,127),0,map(ii,74,96,0,fxHeight) + map(notelist.get(ii).state_velocity,0,127,0,127)); 
           }
             
       } 
