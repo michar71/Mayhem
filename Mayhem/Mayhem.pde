@@ -1,4 +1,3 @@
-
 import controlP5.*;
 import java.util.*;
 import java.lang.*;
@@ -32,7 +31,7 @@ CheckBox decay_gfx;
 List puffmode;
 
 //Hard-coded Constant
-long puffer_dely_ns = 500 * 1000 * 1000;//500ms...
+long puffer_dely_ns = 10 * 1000 * 1000;//500ms...
 
 //General Variables
 int mayhem_version_maj = 0;
@@ -101,7 +100,7 @@ void setup_ui()
      .setValue(1000)
      ;
      
-  puffmode = Arrays.asList("Manual","Single", "Small/Big", "Pulse");
+  puffmode = Arrays.asList("Manual", "Small/Big", "Pulse");
   /* add a ScrollableList, by default it behaves like a DropdownList */
   cp5.addScrollableList("PuffMode")
      .setPosition(240, 0+30)
@@ -386,7 +385,7 @@ void puffer_trigger_process()
   {
     puffer_on = true;
     //Send DMX Command for Puffer Here..
-    if (currentPuffMode == 1)
+    if (currentPuffMode == 0)
     {
       scheduler.firePooferManual(true);
     }
@@ -400,7 +399,7 @@ void puffer_trigger_process()
   {
     puffer_on = false;
     //Send DMX Command for Puffer Here...
-    if (currentPuffMode == 1)
+    if (currentPuffMode == 0)
     {
       scheduler.firePooferManual(false);
     }    
@@ -412,6 +411,11 @@ void puffer_trigger_process()
     if ((now_time > puffer_trigger_end_time) && (now_time < (puffer_trigger_end_time + refill_duration)))
     {
       fill(255,0,0);
+    }
+    if (now_time > (puffer_trigger_end_time + refill_duration))
+    {
+      
+      scheduler.firePooferReset();
     }
   }
   circle(320, 30+12, 12); 
@@ -468,6 +472,7 @@ public void FIRE(int theValue)
     println("FIRE UP");
     if (currentPuffMode == 0)
     {
+      scheduler.firePooferManual(false);
       fill(64,64,64);
       circle(340, 30+12, 12); 
     }

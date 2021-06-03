@@ -46,7 +46,14 @@ class fx_linear_midi extends fx_linear_base
           {
             int h = (int)map(ii,48,71,0,255);
             int s = 255;
-            int b = (int)map(notelist.get(ii).state_velocity,0,127,0,255);
+            int v = notelist.get(ii).state_velocity;
+            int b = 0;
+            if (v<=64)            
+              b = (int)map(notelist.get(ii).state_velocity,0,64,0,16);
+            else if (v<=96)            
+              b = (int)map(notelist.get(ii).state_velocity,0,96,17,32);
+            else
+              b = (int)map(notelist.get(ii).state_velocity,97,127,33,255);
             println(h+"/"+s+"/"+b);
       
             col = color(h,s,b);
@@ -58,7 +65,7 @@ class fx_linear_midi extends fx_linear_base
       {
           if (notelist.get(ii).state_on == true)
           {
-            gfx.line(0,map(ii,74,96,0,fxHeight) - map(notelist.get(ii).state_velocity,0,127,0,127),0,map(ii,74,96,0,fxHeight) + map(notelist.get(ii).state_velocity,0,127,0,127)); 
+            gfx.line(0,map(ii,74,96,0,fxHeight) - map(notelist.get(ii).state_velocity,0,64,0,64),0,map(ii,74,96,0,fxHeight) + map(notelist.get(ii).state_velocity,0,64,0,64)); 
           }
             
       } 

@@ -4,6 +4,10 @@
     "param": "COL_B"
   },
   {
+    "val": 0,
+    "param": "BURST"
+  },
+  {
     "val": 255,
     "param": "COL_R"
   },
@@ -32,7 +36,7 @@
     "param": "COL_G"
   },
   {
-    "val": 1,
+    "val": 650,
     "param": "SCALE"
   }
 ]

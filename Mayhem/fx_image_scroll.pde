@@ -11,7 +11,8 @@ COL_B
 class fx_image_scroll extends fx_linear_base
 {
     String currentfile = "";
-    PGraphics scrollImage;
+    PImage scrollImage;
+    PImage tempImage;
     int xSize = 0;
     int currentXPos = 0;
 
@@ -50,10 +51,10 @@ class fx_image_scroll extends fx_linear_base
              //Load file
              
              //Scale Y
-             scrollImage = createGraphics(bigImage.width, fxHeight);
-             scrollImage.beginDraw();
+             scrollImage = createImage(bigImage.width,fxHeight,RGB);
+             tempImage = createImage(1,fxHeight,RGB);
              scrollImage.copy(bigImage, 0, 0, bigImage.width, bigImage.height, 0, 0,bigImage.width,fxHeight);
-             scrollImage.endDraw();
+
              //Store x-size
              xSize = bigImage.width;
              currentXPos = xSize;
@@ -62,13 +63,10 @@ class fx_image_scroll extends fx_linear_base
       if (xSize != 0)
       {
         //copy line to buffer  
-        gfx.copy(scrollImage, currentXPos, 0, 0, fxHeight, 0, 0, 1, fxHeight);
+        tempImage.copy(scrollImage, currentXPos, 0, 0, fxHeight, 0, 0, 1, fxHeight);       //<>//
+        gfx.image(tempImage, 0,0);         
         
-        //gfx.image(scrollImage, currentXPos, 0,1,fxheight);      
-        
-        
-        
-              //Deal with loop
+        //Deal with loop
         currentXPos--;
         if (currentXPos == -1)
           currentXPos = xSize;

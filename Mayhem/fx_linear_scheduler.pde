@@ -29,7 +29,7 @@ fx_linear_scheduler(int height,fx_linear_base first_fx)
   next_fx = current_fx;
   newFx = false;
   fxGfx = createGraphics(1, fxHeight);
-  artnet_link = new fx_artnet_link(downsample.NEAREST_NEIGHBOR,10);
+  artnet_link = new fx_artnet_link(downsample.MAX_VAL,30);
 }
     
     
@@ -106,6 +106,11 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
   void firePooferManual(boolean on)
   {
     artnet_link.puffer_manual(on);
+  }
+  
+  void firePooferReset()
+  {
+    artnet.puffer_reset();
   }
   
   void firePoofer(int mode)
