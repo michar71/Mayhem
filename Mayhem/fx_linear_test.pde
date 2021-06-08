@@ -51,7 +51,7 @@ class fx_linear_test extends fx_linear_base
       gfx.line(0,cnt,0,cnt+1);
       gfx.line(0,fxHeight-cnt,0,fxHeight-cnt-1);
       
-      cnt++;
+      cnt = cnt + (int)(current_speed/100);
       if (cnt > fxHeight)
         cnt = 0;
 

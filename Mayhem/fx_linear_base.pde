@@ -264,10 +264,22 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
       }
       
       updatevalswithlerp();
+      
+      int b;    
+      try
+      {
+         b = (int)params.get("BURST");
+         current_burst = b;
+      }
+      catch (NullPointerException e)
+      {
+        current_burst = 0;
+      }
+ 
         
       //Update Graphics  
       if (updateFx)
-      {
+      {     
         gfx.beginDraw();
         gfx.stroke(0);
         gfx.line(0,0,0,gfx.height);
@@ -276,16 +288,17 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
         
         current_burst = 0;
         params.put("BURST",current_burst);
-      }
-      
-      //If decay is enabled on every frame we do not update we lower the brightness by some amount and refresh...
-      if (useDecay == true)
-      {
-        gfx.beginDraw();
-        gfx.tint(0,64);
-        gfx.image(gfx,0,0);
-        gfx.endDraw();
-        anires = true;
+        
+               
+        //If decay is enabled on every frame we do not update we lower the brightness by some amount and refresh...
+        if (useDecay == true)
+        {
+          gfx.beginDraw();
+          gfx.tint(0,64);
+          gfx.image(gfx,0,0);
+          gfx.endDraw();
+          anires = true;
+        }
       }
       
       return anires;

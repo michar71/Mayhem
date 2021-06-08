@@ -110,7 +110,7 @@ void updateScheduler(long currentTimeUS,long nextBeatUS,int currentBeatCount,PGr
   
   void firePooferReset()
   {
-    artnet.puffer_reset();
+    artnet_link.puffer_reset();
   }
   
   void firePoofer(int mode)

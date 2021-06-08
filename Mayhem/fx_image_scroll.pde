@@ -63,7 +63,7 @@ class fx_image_scroll extends fx_linear_base
       if (xSize != 0)
       {
         //copy line to buffer  
-        tempImage.copy(scrollImage, currentXPos, 0, 0, fxHeight, 0, 0, 1, fxHeight);       //<>//
+        tempImage.copy(scrollImage, currentXPos, 0, 1, fxHeight, 0, 0, 1, fxHeight);       //<>//
         gfx.image(tempImage, 0,0);         
         
         //Deal with loop

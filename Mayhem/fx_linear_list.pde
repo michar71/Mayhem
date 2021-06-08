@@ -25,7 +25,9 @@ fx_linear_list(int fxheight)
   fxlist.add(new fx_member((fx_linear_base)new fx_image_scroll(fxheight),"ScrollPic")); 
   fxlist.add(new fx_member((fx_linear_base)new fx_linear_vumeter(fxheight),"VUMeter")); 
   fxlist.add(new fx_member((fx_linear_base)new fx_linear_fft(fxheight),"FFT")); 
-    fxlist.add(new fx_member((fx_linear_base)new fx_linear_midi(fxheight),"Midi")); 
+  fxlist.add(new fx_member((fx_linear_base)new fx_linear_midi(fxheight),"Midi")); 
+  fxlist.add(new fx_member((fx_linear_base)new fx_linear_solid(fxheight),"Solid"));     
+    
   //This is currently hardcoded....
 }
 

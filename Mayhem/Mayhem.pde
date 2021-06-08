@@ -24,9 +24,12 @@ ControlP5 cp5;
 Textlabel bpm_label;
 Textlabel fxLabelFPS;
 Bang fire_bang;
-Slider fire_length;
+Slider fire_length_T1;
+Slider fire_length_T2;
+Slider fire_length_T3;
 CheckBox loop_gfx;
 CheckBox sync_gfx;
+CheckBox sync_poof;
 CheckBox decay_gfx;
 List puffmode;
 
@@ -93,18 +96,38 @@ void setup_ui()
      
 
      
-  fire_length = cp5.addSlider("Puff Dur")
+  fire_length_T1 = cp5.addSlider("T1")
      .setPosition(80,0+30)
      .setSize(100,20)
-     .setRange(1,10000)
-     .setValue(1000)
+     .setRange(1,255)
+     .setValue(8)
      ;
      
-  puffmode = Arrays.asList("Manual", "Small/Big", "Pulse");
+  fire_length_T2 = cp5.addSlider("T2")
+     .setPosition(80,0+30+24)
+     .setSize(100,20)
+     .setRange(1,255)
+     .setValue(16)
+     ;
+     
+   fire_length_T3 = cp5.addSlider("T3")
+     .setPosition(80,0+30+48)
+     .setSize(100,20)
+     .setRange(1,255)
+     .setValue(32)
+     ;
+     
+    sync_poof  = cp5.addCheckBox("syncpoof")
+            .setPosition(200,78)
+            .setSize(15, 15)
+            .addItem("Sync Poof to Beat", 1)
+            ;  
+     
+  puffmode = Arrays.asList("Manual", "Small/Big", "Pulse","Single");
   /* add a ScrollableList, by default it behaves like a DropdownList */
   cp5.addScrollableList("PuffMode")
-     .setPosition(240, 0+30)
-     .setSize(buttonx*3,buttony*10)
+     .setPosition(220, 0+30)
+     .setSize(buttonx*4,buttony*10)
      .setBarHeight(20)
      .setItemHeight(20)
      .addItems(puffmode)
@@ -118,14 +141,14 @@ void setup_ui()
                 .addItem("Loop", 0)
                 ;
     
-   sync_gfx  = cp5.addCheckBox("sync")
+   sync_gfx  = cp5.addCheckBox("syncgfx")
                 .setPosition(60, 370)
                 .setSize(15, 15)
-                .addItem("Sync to Beat", 1)
+                .addItem("Sync Lights to Beat", 1)
                 ;  
           
      decay_gfx  = cp5.addCheckBox("decay")
-                .setPosition(140, 370)
+                .setPosition(180, 370)
                 .setSize(15, 15)
                 .addItem("Decay", 1)
                 ;  
@@ -133,7 +156,7 @@ void setup_ui()
   List<String> fxnames = new ArrayList<String>();
   FxList.getNames(fxnames);
   cp5.addScrollableList("FxList")
-     .setPosition(5, 80)
+     .setPosition(5, 400)
      .setSize(buttonx*6,buttony*10)
      .setBarHeight(20)
      .setItemHeight(20)
@@ -150,7 +173,7 @@ void setup_ui()
   }
   
   cp5.addScrollableList("FileList")
-     .setPosition(340, 5)
+     .setPosition(380, 5)
      .setSize(buttonx*8,buttony*20)
      .setBarHeight(20)
      .setItemHeight(20)
@@ -194,7 +217,15 @@ void setup_ui()
            .setLabel("Save Parameters")
            .setPosition(col,top+220)
            .setSize(buttonx*4,buttony)
-           .setBroadcast(true);             
+           .setBroadcast(true);     
+           
+          cp5.addButton("burstButton")
+            .setBroadcast(false)
+           .setValue(128)
+           .setLabel("Burst")
+           .setPosition(col,top+250)
+           .setSize(buttonx*4,buttony)
+           .setBroadcast(true);     
 }
 
 void drawbeatmarker(int beat,int mode)
@@ -376,7 +407,7 @@ void puffer_trigger_process()
     if (now_time > buffer_trigger_start_time)
       buffer_trigger_start_time = buffer_trigger_start_time + (4*beatDetect.getBeatGap());
       
-    puffer_trigger_end_time = buffer_trigger_start_time + ((long)fire_length.getValue() * 1000 * 1000);
+    puffer_trigger_end_time = buffer_trigger_start_time + ((long)fire_length_T1.getValue() * 1000 * 1000);
     puffer_trigger = false;
   }
   
@@ -391,7 +422,8 @@ void puffer_trigger_process()
     }
     else
     {
-      scheduler.firePoofer(currentPuffMode);
+      //Spawn thread for poofer control
+      thread("poofTimerThread");
     }
     fill(0,255,0);
   }
@@ -412,13 +444,95 @@ void puffer_trigger_process()
     {
       fill(255,0,0);
     }
-    if (now_time > (puffer_trigger_end_time + refill_duration))
-    {
-      
-      scheduler.firePooferReset();
-    }
+    //if (now_time > (puffer_trigger_end_time + refill_duration))
+    //{     
+    //   scheduler.firePooferReset();
+    //}
   }
   circle(320, 30+12, 12); 
+}
+
+public enum poofer_states {
+    POOFER_START,
+    POOFER_T1,
+    POOFER_T2,  
+    POOFER_T3,
+    POOFER_END
+}
+
+  //High Resolution Java Thread for Pooofer
+void poofTimerThread() 
+{
+  boolean exit = false;
+  int t1 = (int)fire_length_T1.getValue();
+  int t2 = (int)fire_length_T2.getValue(); 
+  int t3 = (int)fire_length_T3.getValue(); 
+  int mode = currentPuffMode;
+  int count = 0;
+  long currenttime = millis();
+  poofer_states pooferState = poofer_states.POOFER_START;
+  
+  println("POOF THREAD START");
+  
+  //check for exit condition
+  while (exit == false)
+  {
+    //Go through State machine and compare times
+    switch(pooferState)
+    {
+      case POOFER_START:
+        //reset poofer
+        pooferState = poofer_states.POOFER_T1;
+        scheduler.firePooferManual(true);
+        break;
+      case POOFER_T1:
+        if (millis()>= currenttime + t1*1000)
+        {
+          pooferState = poofer_states.POOFER_T2;
+          scheduler.firePooferManual(false);
+        }
+        break;
+      case POOFER_T2:
+        if (millis()>= currenttime + t1*1000 + t2 * 1000)
+        {
+          pooferState = poofer_states.POOFER_T3;
+          scheduler.firePooferManual(true);
+        }
+        break;
+      case POOFER_T3:
+        if (millis()>= currenttime + t1*1000 + t2 * 1000 + t3 * 1000)
+        {
+          if (mode == 2)
+          {
+            pooferState = poofer_states.POOFER_END;
+            scheduler.firePooferManual(false);
+          }
+          else
+          {
+            if (count == t3)
+            {
+              pooferState = poofer_states.POOFER_END;
+              scheduler.firePooferManual(false);
+            }
+            else
+            {
+              pooferState = poofer_states.POOFER_T2;
+              scheduler.firePooferManual(false);
+              currenttime = millis();
+            }
+            count++;
+          }
+        }
+        break;
+      case POOFER_END:
+        scheduler.firePooferManual(false);
+        exit = true;
+        break;
+    }
+  }
+
+
+  println("POOF THREAD EXIT");
 }
 
 //Key Processing
@@ -480,7 +594,7 @@ public void FIRE(int theValue)
   
 }
 
-public void sync(float[] a)
+public void syncgfx(float[] a)
 {
   if (a[0] == 0)
     scheduler.SetStepOnBeat(false);
@@ -576,6 +690,18 @@ void do_save()
       scheduler.saveData();
 }
 
+void do_burst()
+{
+  scheduler.setParam("BURST",1);
+}
+
+
+void burstButton(int theValue)
+{
+   do_burst();
+}
+
+
 void noteOn(int channel, int pitch, int velocity) 
 {
   // Receive a noteOn
@@ -587,6 +713,13 @@ void noteOn(int channel, int pitch, int velocity)
   println("Velocity:"+velocity);
   
   scheduler.sendNote(true,channel,pitch,velocity);
+  
+  if (pitch == 48)
+  {
+      scheduler.firePooferManual(true);
+      fill(0,255,0);
+      circle(340, 30+12, 12); 
+  }  
 }
 
 void noteOff(int channel, int pitch, int velocity) 
@@ -599,6 +732,13 @@ void noteOff(int channel, int pitch, int velocity)
   println("Pitch:"+pitch);
   println("Velocity:"+velocity);
   scheduler.sendNote(false,channel,pitch,velocity);
+  
+  if (pitch == 48)
+  {
+      scheduler.firePooferManual(false);
+      fill(64,64,64);
+      circle(340, 30+12, 12); 
+  }
 }
 
 void controllerChange(int channel, int number, int value)

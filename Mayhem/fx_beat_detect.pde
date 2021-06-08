@@ -71,7 +71,7 @@ class fx_beat_Detect{
   //High Resolution Java Thread for Timer
 void beatTimer() 
 {
-  println("THREAD START");
+  println("BEAT THREAD START");
   
   while(threadON == true)
   {
@@ -89,7 +89,7 @@ void beatTimer()
       }
       delay(1);
   }
-  println("THREAD EXIT");
+  println("BEAT THREAD EXIT");
 }
   
 }

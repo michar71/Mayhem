@@ -40,11 +40,11 @@ class fx_linear_midi extends fx_linear_base
       colorMode(HSB, 255);
       // Use pitch 74-96 velocity to define the "where to draw a value and how big"
       // We use pitch 48-71 to define color and brightness 
-      for (int ii=48;ii<72;ii++)
+      for (int ii=49;ii<72;ii++)
       {
           if (notelist.get(ii).state_on == true)
           {
-            int h = (int)map(ii,48,71,0,255);
+            int h = (int)map(ii,49,71,0,255);
             int s = 255;
             int v = notelist.get(ii).state_velocity;
             int b = 0;
@@ -59,7 +59,11 @@ class fx_linear_midi extends fx_linear_base
             col = color(h,s,b);
           }
       }
-      
+
+      //Add Decay
+      gfx.tint(0,64);
+      gfx.image(gfx,0,0);
+
       gfx.stroke(col);
       for (int ii=74;ii<97;ii++)
       {
