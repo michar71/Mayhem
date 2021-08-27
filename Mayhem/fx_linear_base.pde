@@ -127,7 +127,9 @@ class fx_linear_base{
     }
     
 
-
+    public void processNote(boolean on, int channel, int pitch, int velocity)
+    {
+    }
    //--------------------------
    //  End of override Section
    //--------------------------
@@ -453,11 +455,14 @@ Example current_green = lerpVal(current_green,(int)params.get("COL_R"));
     }
     
     
+
+    
     //Notes can be on and off
-    void sendNote(boolean on, int channel, int pitch, int velocity)
+    final void sendNote(boolean on, int channel, int pitch, int velocity)
     {
       notelist.get(pitch).state_on = on;
       notelist.get(pitch).state_velocity = velocity;
+      processNote(on, channel, pitch, velocity);
     }
 
 }

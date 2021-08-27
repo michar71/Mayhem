@@ -1,5 +1,4 @@
 
-//- Fix Image Playback
 //- Assign Images to Midi-Keys
 //- Blend between effects
 

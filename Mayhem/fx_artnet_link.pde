@@ -112,7 +112,7 @@ void fx_artnet_update(PGraphics gfx)
             for (int ii=start; ii<stop;ii++)
             {
               color avgcol =  gfx.get(0,ii);
-              avg_r = avg_r + ((avgcol >> 16) & 0xFF); //<>//
+              avg_r = avg_r + ((avgcol >> 16) & 0xFF); //<>// //<>//
               avg_g = avg_g + ((avgcol >> 16) & 0xFF);
               avg_b = avg_b + ((avgcol >> 16) & 0xFF);              
               cnt++;

@@ -1,0 +1,38 @@
+[
+  {
+    "val": true,
+    "param": "LOOPABLE"
+  },
+  {
+    "val": true,
+    "param": "FADEABLE"
+  },
+  {
+    "val": true,
+    "param": "BEATSYNC"
+  },
+  {
+    "val": true,
+    "param": "MEASURESYNC"
+  },
+  {
+    "val": true,
+    "param": "PHASEINOUTFROMKEYS"
+  },
+  {
+    "val": 1,
+    "param": "STEPSPERBEAT"
+  },
+  {
+    "val": 10,
+    "param": "PHASEINSPEED"
+  },
+  {
+    "val": 10,
+    "param": "PHASEOUTSPEED"
+  },
+  {
+    "val": "ll_test2",
+    "param": "IMAGEFILE"
+  }
+]
